@@ -47,10 +47,10 @@ How it works
 
 Files of Importance
 ==========================
-resources/js/Pages/kanbanapp.tsx
-routes/web.php  
-app/Http/Controllers/KanbanController.php
-app/Models/Task.php, Column.php
+- resources/js/Pages/kanbanapp.tsx
+- routes/web.php  
+- app/Http/Controllers/KanbanController.php
+- app/Models/Task.php, Column.php
 
 Future Improvements
 ==========================
