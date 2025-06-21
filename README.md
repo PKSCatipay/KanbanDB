@@ -16,28 +16,28 @@ Setup Instructions
 ==========================
 
 Clone the repository:
-git clone https://github.com/PKSCatipay/KanbanDB.git
-cd KanbanDB
+- git clone https://github.com/PKSCatipay/KanbanDB.git
+- cd KanbanDB
 
 Install backend and frontend dependencies:
-composer install
-npm install
+- composer install
+- npm install
 
 Create environment file and generate app key:
-cp .env.example .env
-php artisan key:generate
+- cp .env.example .env
+- php artisan key:generate
 
 Configure your database inside the `.env` file:
-DB_DATABASE=mysql
-DB_USERNAME=your_db_user
-DB_PASSWORD=your_db_password
+- DB_DATABASE=mysql
+- DB_USERNAME=your_db_user
+- DB_PASSWORD=your_db_password
 
 Run database migrations:
-php artisan migrate
+- php artisan migrate
 
 Start development servers:
-php artisan serve
-npm run dev
+- php artisan serve
+- npm run dev
 
 How it works
 ==========================
