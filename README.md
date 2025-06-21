@@ -45,7 +45,6 @@ php artisan migrate
 php artisan serve        # For Laravel backend
 npm run dev              # For Vite React frontend
 
-
 How it works
 ==========================
 
@@ -56,8 +55,8 @@ How it works
 Files of Importance
 ==========================
 
-resources/js/Pages/kanbanapp.tsx      <-- React Component
-routes/web.php                        <-- Route definitions
+resources/js/Pages/kanbanapp.tsx
+routes/web.php  
 app/Http/Controllers/KanbanController.php
 app/Models/Task.php, Column.php
 
@@ -73,7 +72,6 @@ Existing Bugs
 ==========================
 - Rearranging Tasks in Column
   - Bug: Tasks always goes to the bottom (can be seen in Console logs)
-
 
 If all is set, you can now open your browser at http://localhost:8000 and start using the Kanban board.
 Happy Activities!
