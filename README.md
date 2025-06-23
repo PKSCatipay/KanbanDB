@@ -62,8 +62,7 @@ Future Improvements
 
 Existing Bugs
 ==========================
-- Rearranging Tasks in Column
-  - Bug: Tasks always go to the bottom (can be seen in Console logs)
+- None so far! (hopefully in the future)
 
 If all is set, you can now open your browser at http://localhost:8000 and start using the Kanban board.
 Happy Activities!
