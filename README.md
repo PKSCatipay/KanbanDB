@@ -1,3 +1,4 @@
+
 Kanban Board (Laravel + Inertia.js + React)
 
 Project Description
@@ -47,10 +48,10 @@ How it works
 
 Files of Importance
 ==========================
-resources/js/Pages/kanbanapp.tsx
-routes/web.php  
-app/Http/Controllers/KanbanController.php
-app/Models/Task.php, Column.php
+- resources/js/Pages/kanbanapp.tsx
+- routes/web.php
+- app/Http/Controllers/KanbanController.php
+- app/Models/Task.php, Column.php
 
 Future Improvements
 ==========================
@@ -62,7 +63,7 @@ Future Improvements
 Existing Bugs
 ==========================
 - Rearranging Tasks in Column
-  - Bug: Tasks always goes to the bottom (can be seen in Console logs)
+  - Bug: Tasks always go to the bottom (can be seen in Console logs)
 
 If all is set, you can now open your browser at http://localhost:8000 and start using the Kanban board.
 Happy Activities!
