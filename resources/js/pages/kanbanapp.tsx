@@ -90,32 +90,34 @@ export default function KanbanApp({ columns: initialColumns }: Props) {
       const updates: TaskUpdate[] = [];
 
       const newCols = cols.map((col) => {
-        const isTargetCol = col.id === toColumnId;
-        const isSourceCol = col.id === fromColumnId;
+        const isSource = col.id === fromColumnId;
+        const isTarget = col.id === toColumnId;
 
-        // Get index before removing task
-        const fromIdx = isSourceCol
-          ? col.tasks.findIndex((t) => t.id === task.id)
-          : -1;
+        let tasks = [...col.tasks];
 
-        // Remove the task from this column
-        let tasks = col.tasks.filter((t) => t.id !== task.id);
+        // Remove task from source column
+        if (isSource) {
+          tasks = tasks.filter((t) => t.id !== task.id);
+        }
 
-        // Insert into target column at correct position
-        if (isTargetCol) {
-          let insertAt = toTaskIndex;
+        // Insert task into target column
+        if (isTarget) {
+          let insertIndex = toTaskIndex;
 
-          // Adjust index if moving within same column and downward
-          if (isSourceCol && fromIdx < insertAt) {
-            insertAt -= 1;
+          if (isSource) {
+            const originalIndex = col.tasks.findIndex((t) => t.id === task.id);
+            if (originalIndex < toTaskIndex) {
+              insertIndex -= 1;
+            }
           }
 
-          console.log("Inserting at:", insertAt);
-          console.log("Drop target index:", toTaskIndex);
-          console.log("From column:", fromColumnId, "→ To column:", toColumnId);
+          tasks = [
+            ...tasks.slice(0, insertIndex),
+            { ...task, column_id: toColumnId },
+            ...tasks.slice(insertIndex),
+          ];
 
-          tasks.splice(insertAt, 0, { ...task, column_id: toColumnId });
-
+          // Rebuild task positions
           tasks = tasks.map((t, i) => {
             updates.push({ id: t.id, column_id: toColumnId, position: i });
             return { ...t, position: i };
@@ -236,7 +238,7 @@ export default function KanbanApp({ columns: initialColumns }: Props) {
                           e.preventDefault();
                           e.stopPropagation();
                           handleDragOverTask(e, column.id, idx);
-                        }}
+                        }}  
                         onDrop={handleDrop}
                       />
                       <div

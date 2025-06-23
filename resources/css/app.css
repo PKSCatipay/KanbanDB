@@ -287,7 +287,6 @@ body {
   color: #1f2937;
   border-radius: 0.5rem;
   padding: 1rem;
-  margin-bottom: 0.75rem;
   transition: all 0.2s ease-in-out;
   cursor: move;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
@@ -314,12 +313,11 @@ body {
 }
 
 .DropZone {
-  height: 8px;
-  margin: 4px 0;
+  height: 20px;
   background-color: transparent;
   transition: background-color 0.2s ease;
 }
 
 .DropZone:hover {
-  background-color: rgba(0, 0, 0, 0.1); /* light gray highlight on hover */
+  background-color: rgba(0, 0, 0, 0.1);
 }
