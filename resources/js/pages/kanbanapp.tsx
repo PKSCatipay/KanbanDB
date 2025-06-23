@@ -145,7 +145,7 @@ export default function KanbanApp({ columns: initialColumns }: Props) {
       preserveScroll: true,
       onSuccess: () => {
         reset(); // clear form fields
-        router.reload({ only: ['columns'] } as any);
+        router.reload({ only: ['columns'] });
       },
       onError: (errors) => {
         console.error('Task creation failed', errors);
