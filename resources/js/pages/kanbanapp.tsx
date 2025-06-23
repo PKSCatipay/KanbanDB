@@ -86,7 +86,8 @@ export default function KanbanApp({ columns: initialColumns }: Props) {
     }
 
     setColumns((cols) => {
-      const updates: any[] = [];
+      type TaskUpdate = { id: number; column_id: number; position: number };
+      const updates: TaskUpdate[] = [];
 
       const newCols = cols.map((col) => {
         const isTargetCol = col.id === toColumnId;
