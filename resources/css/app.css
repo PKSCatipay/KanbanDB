@@ -161,37 +161,48 @@
 /* // Below are the custom styles for the Kanban board */
 body {
   margin: 0;
-  padding: 0;
+  padding: 10px 10px;
+  background-color: #f1f1f1;
   overflow-x: hidden;
 }
 
 .KanbanBoard {
-  display: flex;              /* flex */
-  flex-direction: column;    /* flex-col */
-  align-items: center;       /* items-center */
-  padding: 2rem;             /* p-8 */
-  background-color: #cfd2d4; /* bg-gray-50 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-image: linear-gradient(#a6bcca, #e4e3e3);
   min-height: 100vh;
 }
 
 .TitleHeader {
-  font-size: 4rem;
+  font-size: 5rem;
   font-weight: bold;
   font-family: 'Segoe UI', sans-serif;
   text-align: center;
-  color: #222;
+  background: linear-gradient(#181818, #292929, #505050, #999999);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
 }
 
+.underline {
+  width: 250px;
+  height: 6px;
+  background: #222;
+  border-radius: 5px;
+  margin-bottom: 30px;
+}
+
+/* ────────────── Search Bar ────────────── */
 .SearchBar {
-  margin-bottom: 2rem; /* mb-8 */
-  display: flex;       /* flex */
-  width: 100%;         /* w-full */
-  max-width: 32rem;    /* max-w-lg = 512px */
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* shadow-lg */
-  border-radius: 0.5rem; /* rounded-lg = 8px */
-  overflow: hidden;    /* overflow-hidden */
+  display: flex;
+  width: 100%;
+  max-width: 32rem;
+  margin: 0 auto 2rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
 
 .SearchText {
@@ -200,8 +211,8 @@ body {
   font-size: 1rem;
   border: none;
   outline: none;
-  background-color: white; /* ✅ background white */
-  color: black;            /* ✅ text black */
+  background-color: white;
+  color: black;
 }
 
 .DropDownButton {
@@ -216,80 +227,92 @@ body {
 }
 
 .AddButton {
-  padding-left: 1.5rem; /* px-6 = 24px */
-  padding-right: 1.5rem;
   padding: 0.75rem 1.25rem;
-
-  background: #0432ca; /* from-yellow-600 to-amber-500 */
-  color: white;                         /* text-white */
-  font-weight: 500;                     /* font-medium */
-  cursor: pointer;                      /* cursor-pointer */
-  transition: all 0.2s ease-in-out;     /* transition-all duration-200 */
-
-  border: none;        /* ✅ Remove any default border */
-  outline: none;       /* ✅ Remove black border on focus (if needed) */
+  background: #0432ca;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  outline: none;
 }
 
-/* Hover state */
 .AddButton:hover {
-  background: #4b73f5; /* hover:from-yellow-500 hover:to-amber-500 */
+  background: #4b73f5;
 }
 
+/* ────────────── Columns and Tasks ────────────── */
 .FlexContainer {
-  display: flex;              /* flex */
-  gap: 1.5rem;                /* gap-6 = 1.5rem */
-  overflow-x: auto;           /* overflow-x-auto */
-  padding-bottom: 1.5rem;     /* pb-6 = 1.5rem */
-  width: 100%;                /* w-full */
+  display: flex;
   justify-content: center;
+  align-items: stretch;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 1.5rem;
+  width: 100%;
 }
 
 .Column {
-  flex-shrink: 0;             /* flex-shrink-0 */
-  width: 20rem;               /* w-80 = 320px */
-  background-color: #2a2a27;  /* bg-zinc-800 */
-  border-radius: 0.5rem;      /* rounded-lg = 8px */
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
-              0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-xl */
+  width: 20rem;
+  flex: 0 0 20rem;
+  display: flex;
+  flex-direction: column;
+  background-color: #2a2a27;
+  border-radius: 0.5rem;
   font-family: 'Segoe UI', sans-serif;
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .ColumnHeader {
-  padding: 1rem;                     /* p-4 */
-  color: white;                      /* text-white */
-  font-weight: bold;                 /* font-bold */
-  font-size: 1.25rem;                /* text-xl */
-  border-top-left-radius: 0.375rem;  /* rounded-t-md */
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: white;
+  border-top-left-radius: 0.375rem;
   border-top-right-radius: 0.375rem;
-  text-align: center;                /* center the column name */
-  border-bottom: 1px solid #52525b;  /* subtle separation line */
+  border-bottom: 1px solid #52525b;
 }
 
 .ColumnBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   padding: 0.75rem;
   min-height: 16rem;
+  position: relative;
 }
 
 .EmptyColumnText {
-  display: flex;
-  margin-top: 5.5rem;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
+  margin-top: auto;
+  margin-bottom: auto;
+  text-align: center;
   font-style: italic;
+  font-size: 1rem;
   color: #6e6e6e;
-  opacity: 0.7
+  opacity: 0.7;
 }
 
+/* ────────────── Task Item ────────────── */
 .TaskItem {
   background-color: #f1f5f9;
   color: #1f2937;
   border-radius: 0.5rem;
-  padding: 1rem;
+  padding: 0.75rem;
   transition: all 0.2s ease-in-out;
   cursor: move;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  word-break: break-word;
+  box-sizing: border-box;
 }
 
 .TaskItem:hover {
@@ -297,25 +320,41 @@ body {
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
 }
 
-.DeleteButton {
-  background-color: #ef4444; /* red-600 */
-  color: white;              /* text-white */
-  border: none;              /* border-none */
-  border-radius: 0.375rem;   /* rounded-md */
-  padding: 0.25rem 0.5rem;   /* py-1 px-2 */
-  cursor: pointer;           /* cursor-pointer */
-  font-size: 0.875rem;       /* text-sm */
-  float: right;
+/* ────────────── Buttons ────────────── */
+.DeleteButton,
+.EditButton {
+  border: none;
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  color: white;
   margin-left: 0.5rem;
 }
-.DeleteButton:hover {
-  background-color: #dc2626; /* hover:bg-red-700 */
+
+.DeleteButton {
+  background-color: #ef4444;
 }
 
+.DeleteButton:hover {
+  background-color: #dc2626;
+}
+
+.EditButton {
+  background-color: #6d6d6d;
+}
+
+.EditButton:hover {
+  background-color: #3b3b3b;
+}
+
+/* ────────────── Drop Zone ────────────── */
 .DropZone {
   height: 20px;
-  background-color: transparent;
-  transition: background-color 0.2s ease;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: background-color;
+  box-sizing: border-box;
 }
 
 .DropZone:hover {
