@@ -66,7 +66,6 @@ Existing Bugs
 
 NOTES
 ==========================
-- To actually re-arrange the tasks inside the columns,
-  you have to insert it exactly in the gaps between tasks
+- To actually re-arrange the tasks inside the columns, you have to insert it exactly in the gaps between tasks
 If all is set, you can now open your browser at http://localhost:8000 and start using the Kanban board.
 Happy Activities!
