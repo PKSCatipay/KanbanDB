@@ -251,7 +251,17 @@ export default function KanbanApp({ columns: initialColumns }: Props) {
                       }}
                       onDrop={handleDrop}
                     />
-                    <div className="TaskItem" draggable onDragStart={() => handleDragStart(column.id, task)}>
+                    <div
+                      className="TaskItem"
+                      draggable={editingTaskId !== task.id}
+                      onDragStart={(e) => {
+                        if (editingTaskId !== task.id) {
+                          handleDragStart(column.id, task);
+                        } else {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
                       <div style={{ flex: 1, overflow: 'hidden' }}>
                         {editingTaskId === task.id ? (
                           <input
