@@ -48,6 +48,8 @@ export default function KanbanApp({ columns: initialColumns }: Props) {
   // for deleting tasks
   const { delete: destroy } = useForm({});
 
+  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
+  const [editedContent, setEditedContent] = useState<string>('');
 
   const handleDragStart = (fromColumnId: number, task: Task) => {
     setDraggedItem({ fromColumnId, task });
@@ -86,46 +88,41 @@ export default function KanbanApp({ columns: initialColumns }: Props) {
     }
 
     setColumns((cols) => {
-      type TaskUpdate = { id: number; column_id: number; position: number };
-      const updates: TaskUpdate[] = [];
+      const newCols = [...cols];
 
-      const newCols = cols.map((col) => {
-        const isSource = col.id === fromColumnId;
-        const isTarget = col.id === toColumnId;
+      const sourceColIndex = newCols.findIndex((col) => col.id === fromColumnId);
+      const targetColIndex = newCols.findIndex((col) => col.id === toColumnId);
+      if (sourceColIndex === -1 || targetColIndex === -1) return cols;
 
-        let tasks = [...col.tasks];
+      const taskToMove = newCols[sourceColIndex].tasks.find((t) => t.id === task.id);
+      if (!taskToMove) return cols;
 
-        // Remove task from source column
-        if (isSource) {
-          tasks = tasks.filter((t) => t.id !== task.id);
+      // Remove from source
+      newCols[sourceColIndex].tasks = newCols[sourceColIndex].tasks.filter(
+        (t) => t.id !== task.id
+      );
+
+      // Adjust target index if moving within same column and downward
+      let insertIndex = toTaskIndex;
+      if (fromColumnId === toColumnId) {
+        const originalIndex = cols[sourceColIndex].tasks.findIndex((t) => t.id === task.id);
+        if (originalIndex < toTaskIndex) {
+          insertIndex -= 1;
         }
+      }
 
-        // Insert task into target column
-        if (isTarget) {
-          let insertIndex = toTaskIndex;
-
-          if (isSource) {
-            const originalIndex = col.tasks.findIndex((t) => t.id === task.id);
-            if (originalIndex < toTaskIndex) {
-              insertIndex -= 1;
-            }
-          }
-
-          tasks = [
-            ...tasks.slice(0, insertIndex),
-            { ...task, column_id: toColumnId },
-            ...tasks.slice(insertIndex),
-          ];
-
-          // Rebuild task positions
-          tasks = tasks.map((t, i) => {
-            updates.push({ id: t.id, column_id: toColumnId, position: i });
-            return { ...t, position: i };
-          });
-        }
-
-        return { ...col, tasks };
+      // Insert into target
+      newCols[targetColIndex].tasks.splice(insertIndex, 0, {
+        ...taskToMove,
+        column_id: toColumnId,
       });
+
+      // Recalculate positions
+      const updates = newCols[targetColIndex].tasks.map((t, i) => ({
+        id: t.id,
+        column_id: toColumnId,
+        position: i,
+      }));
 
       router.post('/kanban/reorder', { updates }, {
         preserveScroll: true,
@@ -146,7 +143,7 @@ export default function KanbanApp({ columns: initialColumns }: Props) {
     post('/kanban', {
       preserveScroll: true,
       onSuccess: () => {
-        reset(); // clear form fields
+        reset();
         router.reload({ only: ['columns'] });
       },
       onError: (errors) => {
@@ -173,9 +170,24 @@ export default function KanbanApp({ columns: initialColumns }: Props) {
     });
   };
 
+  const handleUpdateTaskContent = (taskId: number) => {
+    const trimmed = editedContent.trim();
+    if (!trimmed) return;
+
+    router.patch(`/kanban/${taskId}/content`, { content: trimmed }, {
+      preserveScroll: true,
+      onSuccess: () => {
+        setEditingTaskId(null);
+        router.reload({ only: ['columns'] });
+      },
+      onError: (err) => console.error('Update failed', err),
+    });
+  };
+
   return (
     <div className="KanbanBoard">
       <h1 className="TitleHeader">Kanban Board</h1>
+      <div className="underline"></div>
       <div className="SearchBar">
         <input
           type="text"
@@ -191,24 +203,26 @@ export default function KanbanApp({ columns: initialColumns }: Props) {
           className="DropDownButton"
         >
           {columns.map((col) => (
-            <option key={col.id} value={col.id}>
-              {col.name}
-            </option>
+            <option key={col.id} value={col.id}>{col.name}</option>
           ))}
         </select>
-        <button onClick={handleAddTask} className="AddButton">
-          Add
-        </button>
+        <button onClick={handleAddTask} className="AddButton">Add</button>
       </div>
 
       <div className="FlexContainer">
         {columns.map((column) => {
-          const key = column.name.toLowerCase().includes('done')
-            ? 'done'
-            : column.name.toLowerCase().includes('in progress')
-            ? 'inProgress'
-            : 'toDo';
-          const styles = columnStyles[key as keyof typeof columnStyles];
+          let key: 'toDo' | 'inProgress' | 'done';
+          const lowerName = column.name.toLowerCase();
+
+          if (lowerName.includes('done')) {
+            key = 'done';
+          } else if (lowerName.includes('in progress')) {
+            key = 'inProgress';
+          } else {
+            key = 'toDo';
+          }
+
+          const styles = columnStyles[key];
 
           return (
             <div
@@ -221,42 +235,57 @@ export default function KanbanApp({ columns: initialColumns }: Props) {
               <div className="ColumnHeader" style={{ backgroundColor: styles.headerColor }}>
                 {column.name}
               </div>
+
               <div className="ColumnBody">
-                {column.tasks.length === 0 ? (
-                  <div
-                    className="EmptyColumnText"
-                    onDrop={handleDrop}
-                  >
-                    Drop Task Here
-                  </div>
-                ) : (
-                  column.tasks.map((task, idx) => (
-                    <React.Fragment key={task.id}>
-                      <div
-                        className="DropZone"
-                        onDragOver={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleDragOverTask(e, column.id, idx);
-                        }}  
-                        onDrop={handleDrop}
-                      />
-                      <div
-                        className="TaskItem"
-                        draggable
-                        onDragStart={() => handleDragStart(column.id, task)}
-                      >
-                        <span style={{ margin: '2px' }}>{task.content}</span>
+                {column.tasks.length === 0 && (
+                  <div className="EmptyColumnText">Drop Tasks Here</div>
+                )}
+                {column.tasks.map((task, idx) => (
+                  <React.Fragment key={task.id}>
+                    <div
+                      className="DropZone"
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDragOverTask(e, column.id, idx+1);
+                      }}
+                      onDrop={handleDrop}
+                    />
+                    <div className="TaskItem" draggable onDragStart={() => handleDragStart(column.id, task)}>
+                      <div style={{ flex: 1, overflow: 'hidden' }}>
+                        {editingTaskId === task.id ? (
+                          <input
+                            type="text"
+                            value={editedContent}
+                            onChange={(e) => setEditedContent(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleUpdateTaskContent(task.id);
+                              if (e.key === 'Escape') setEditingTaskId(null);
+                            }}
+                            style={{ width: '100%' }}
+                            autoFocus
+                          />
+                        ) : (
+                          <span>{task.content}</span>
+                        )}
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.25rem' }}>
                         <button
-                          onClick={() => handleRemoveTask(column.id, task.id)}
-                          className="DeleteButton"
+                          onClick={() => {
+                            setEditingTaskId(task.id);
+                            setEditedContent(task.content);
+                          }}
+                          className="EditButton"
                         >
+                          ✎
+                        </button>
+                        <button onClick={() => handleRemoveTask(column.id, task.id)} className="DeleteButton">
                           X
                         </button>
                       </div>
-                    </React.Fragment>
-                  ))
-                )}
+                    </div>
+                  </React.Fragment>
+                ))}
                 <div
                   className="DropZone"
                   onDragOver={(e) => {

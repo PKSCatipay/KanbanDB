@@ -39,10 +39,21 @@ class KanbanController extends Controller
         return Inertia::location(route('kanban.index'));
     }
 
-    public function update(Request $request, Task $task)
+    public function updateColumn(Request $request, Task $task)
     {
         $validated = $request->validate([
             'column_id' => 'required|exists:columns,id',
+        ]);
+
+        $task->update($validated);
+
+        return Inertia::location(route('kanban.index'));
+    }
+
+    public function updateContent(Request $request, Task $task)
+    {
+        $validated = $request->validate([
+            'content' => 'sometimes|string|max:255',
         ]);
 
         $task->update($validated);

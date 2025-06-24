@@ -2,29 +2,26 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KanbanController;
+use App\Http\Controllers\UserController;
 use Inertia\Inertia;
 
-/*
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
-*/
 Route::get('/', [KanbanController::class, 'index'])->name('kanban.index');
 Route::post('/kanban', [KanbanController::class, 'store'])->name('kanban.store');
 Route::delete('/kanban/{task}', [KanbanController::class, 'destroy'])->name('kanban.destroy');
-Route::patch('/kanban/{task}', [KanbanController::class, 'update'])->name('kanban.update');
+Route::patch('/kanban/{task}/column', [KanbanController::class, 'updateColumn'])->name('kanban.updateColumn');
+Route::patch('/kanban/{task}/content', [KanbanController::class, 'updateContent'])->name('kanban.updateContent');
 Route::post('/kanban/reorder', [KanbanController::class, 'reorder'])->name('kanban.reorder');
 
+Route::get('/home', function () {
+    return Inertia::render('welcome');
+})->name('home');
+
+Route::get('/register', [UserController::class, 'showRegister'])->name('show.register');
+Route::get('/login', [UserController::class, 'showLogin'])->name('show.login');
 
 Route::get('/test', function () {
     return Inertia::render('test');
 })->name('test');
-
-/*
-Route::get('/kanban', function () {
-    return Inertia::render('kanbanapp');
-})->name('kboard');
-*/
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
