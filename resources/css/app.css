@@ -352,7 +352,7 @@ body {
 .DropZone {
   height: 20px;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: transparent;
   transition: background-color;
   box-sizing: border-box;
 }
