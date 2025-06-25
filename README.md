@@ -30,6 +30,7 @@ Create environment file and generate app key:
 
 (First create a database before proceeding to next step,
 if you don't currently have one at the ready.)
+
 Configure your database inside the `.env` file:
 - DB_DATABASE=your_db_name
 - DB_USERNAME=your_db_user
