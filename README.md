@@ -67,6 +67,7 @@ Existing Bugs
 NOTES
 ==========================
 - To actually re-arrange the tasks inside the columns, you have to insert it exactly in the gaps between tasks
+- A Drop Zone will be visible when you hover the cursor in between the tasks, indication on where to put the tasks.
 
 If all is set, you can now open your browser at http://localhost:8000 and start using the Kanban board.
 Happy Activities!
